@@ -128,11 +128,10 @@ func resourceJobTemplateLaunchCreate(ctx context.Context, d *schema.ResourceData
 
 	if d.Get("wait_for_completion").(bool) {
 		err = jobTemplateLaunchWait(ctx, client.JobService, res, d.Timeout(schema.TimeoutCreate))
-		if len(err.Error()) > 0 {
-			//nolint:govet
+		if err != nil {
 			return utils.Diagf(
 				"JobTemplate execution failure",
-				fmt.Sprintf("JobTemplateLaunch with ID %d and template ID %d, failed to complete %s", res.ID, d.Get("job_template_id").(int), err.Error()),
+				"JobTemplateLaunch with ID %d and template ID %d, failed to complete %s", res.ID, d.Get("job_template_id").(int), err.Error(),
 			)
 		}
 	}
